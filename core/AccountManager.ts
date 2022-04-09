@@ -7,7 +7,7 @@ import Account from "./Account";
  */
 export default class AccountManager {
     private accounts: Map<string, Account>;
-    private loader: null;
+    private loader: any;
 
     constructor() {
         this.accounts = new Map();
@@ -38,6 +38,10 @@ export default class AccountManager {
         return this.accounts.get(username);
     }
 
+    /**
+     * @param {string} username
+     * @param {boolean} force Force reload data from disk
+     */
     async loadAccount(username: string, force: boolean) {
         if(this.accounts.has(username) && !force) {
             return this.getAccount(username)
@@ -50,5 +54,8 @@ export default class AccountManager {
         const accountParameters = await this.loader.fetch(username)
 
         const account = new Account(accountParameters);
+        this.addAccount(account);
+
+        return account;
     }
 }

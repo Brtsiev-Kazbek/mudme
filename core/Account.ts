@@ -2,7 +2,9 @@
 // import FileManager from './FileManager';
 
 import IAccount from './interfaces/IAccount';
-import ICrypt from './interfaces/ICrypt';
+import Crypt from './Crypt'
+
+const crypt = new Crypt();
 
 export default class Account implements IAccount {
     username: string;
@@ -12,7 +14,7 @@ export default class Account implements IAccount {
     deleted: boolean;
     metadata: object;
 
-    constructor(private readonly crypt: ICrypt , accountParameters: AccountParameters) {
+    constructor(accountParameters: AccountParameters) {
         this.username = accountParameters.username;
         this.characters = accountParameters.characters || [];
         this.password = accountParameters.password;
@@ -72,7 +74,7 @@ export default class Account implements IAccount {
      * @param {string} password Unhashed password. Is hashed inside this function
      */
     setPassword(password: string): void {
-        this.password = this.crypt.hashPassword(password);
+        this.password = crypt.hashPassword(password);
         this.save();
     }
 
@@ -81,8 +83,8 @@ export default class Account implements IAccount {
      * @return {boolean}
      */
     checkPassword(password: string): boolean {
-        password = this.crypt.hashPassword(password);
-        return this.crypt.compare(this.password, password);
+        password = crypt.hashPassword(password);
+        return crypt.compare(this.password, password);
     }
 
     /**
